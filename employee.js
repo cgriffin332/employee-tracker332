@@ -17,16 +17,55 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId);
-  afterConnection();
+  //getEmployeeInfo();
+  //getEmployeeNames();
+  //getDepartments();
+  getRoles();
 });
 
-function afterConnection() {
+function getEmployeeInfo() {
   connection.query(
     `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, employee.manager_id
   FROM role
   INNER JOIN employee ON employee.role_id = role.id 
   INNER JOIN department ON department.id = role.department_id
   ORDER BY employee.id;`,
+    function (err, res) {
+      if (err) throw err;
+      console.table(res);
+      connection.end();
+    }
+  );
+}
+
+function getEmployeeNames() {
+  connection.query(
+    `SELECT CONCAT(first_name, ' ', last_name) FROM employee;
+    `,
+    function (err, res) {
+      if (err) throw err;
+      console.table(res);
+      connection.end();
+    }
+  );
+}
+
+function getDepartments() {
+  connection.query(
+    `SELECT name FROM department;
+    `,
+    function (err, res) {
+      if (err) throw err;
+      console.table(res);
+      connection.end();
+    }
+  );
+}
+
+function getRoles() {
+  connection.query(
+    `SELECT title FROM role;
+    `,
     function (err, res) {
       if (err) throw err;
       console.table(res);
