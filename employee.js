@@ -1,5 +1,6 @@
 const mysql = require("mysql");
-const cTable = require('console.table');
+const cTable = require("console.table");
+const inquirer = require("inquirer");
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -14,6 +15,7 @@ var connection = mysql.createConnection({
   password: "Sdat687!",
   database: "employee_trackerDB",
 });
+let employeeNamesArray = [];
 
 connection.connect(function (err) {
   if (err) throw err;
@@ -22,6 +24,9 @@ connection.connect(function (err) {
   //getEmployeeNames();
   //getDepartments();
   //getRoles();
+  //addEmployeeQuestions();
+  // getEmployeeNames();
+  // removeEmployeeQuestions();
 });
 //get employee info
 function getEmployeeInfo() {
@@ -38,18 +43,91 @@ function getEmployeeInfo() {
     }
   );
 }
-//function to add new employee
-function addEmployee(first, last, role_id, manager_id){
-  connection.query(
-    `INSERT INTO employee (first_name, last_name, role_id, manager_id)
-    VALUES (${first}, ${last}, ${role_id}, ${manager_id})`,
-    function (err, res) {
-      if (err) throw err;
-      console.table(res);
-      connection.end();
-    }
-  );  
+// type: "list",
+//       message: "What is your preferred method of communciation?",
+//       name: "method",
+//       choices: ["email", "phone"]
+
+function removeEmployeeQuestions() {
+  // getEmployeeNames();
+  //need to get this to wait
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        message: "What wouldyou like to do?",
+        name: "do",
+        choices: ["Remove an Employee.", "Don't remove an employee."],
+      },
+      {
+        type: "list",
+        message: "Which employee would you like to remove?",
+        name: "name",
+        choices: employeeNamesArray,
+      },
+    ])
+    .then(function (choice) {
+      connection.query(
+        `DELETE FROM employee
+      WHERE first_name = "${choice.name.split(" ")[0]}"`,
+        function (err, res) {
+          if (err) throw err;
+          console.table(res);
+        }
+      );
+      getEmployeeInfo();
+    });
 }
+
+// function addEmployeeQuestions() {
+//   inquirer
+//     .prompt([
+//       {
+//         type: "input",
+//         message: "What is the employee's first name?",
+//         name: "first",
+//       },
+//       {
+//         type: "input",
+//         message: "What is the employee's last name?",
+//         name: "last",
+//       },
+//       {
+//         type: "list",
+//         message: "What is your preferred method of communciation?",
+//         name: "role",
+//         choices: ["Sales Rep", "Accountant", "Lawyer", "Engineer"],
+//       },
+//     ])
+//     .then(function (choice) {
+//       if (choice.role === "Sales Rep") {
+//         role_id = 2;
+//         manager_id = 1;
+//       } else if (choice.role === "Accountant") {
+//         role_id = 4;
+//         manager_id = 3;
+//       } else if (choice.role === "Lawyer") {
+//         role_id = 6;
+//         manager_id = 5;
+//       } else if (choice.role === "Engineer") {
+//         role_id = 8;
+//         manager_id = 7;
+//       }
+//       addEmployee(choice.first, choice.last, role_id, manager_id);
+//       getEmployeeInfo();
+//     });
+// }
+// //function to add new employee
+// function addEmployee(first, last, role_id, manager_id) {
+//   connection.query(
+//     `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+//   VALUES ("${first}", "${last}", ${role_id}, ${manager_id})`,
+//     function (err, res) {
+//       if (err) throw err;
+//       console.table(res);
+//     }
+//   );
+// }
 //get employee names
 function getEmployeeNames() {
   connection.query(
@@ -57,58 +135,58 @@ function getEmployeeNames() {
     `,
     function (err, res) {
       if (err) throw err;
-      console.table(res);
-      connection.end();
+      for (let i = 0; i < res.length; i++) {
+        employeeNamesArray.push(res[i]["CONCAT(first_name, ' ', last_name)"]);
+      }
+      return employeeNamesArray;
     }
   );
 }
-//get departments
-function getDepartments() {
-  connection.query(
-    `SELECT name FROM department;
-    `,
-    function (err, res) {
-      if (err) throw err;
-      console.table(res);
-      connection.end();
-    }
-  );
-}
-//add department
-function addDepartments(name) {
-  connection.query(
-    `INSERT INTO department (name)
-    VALUES (${name})
-    `,
-    function (err, res) {
-      if (err) throw err;
-      console.table(res);
-      connection.end();
-    }
-  );
-}
-//get roles
-function getRoles() {
-  connection.query(
-    `SELECT title FROM role;
-    `,
-    function (err, res) {
-      if (err) throw err;
-      console.table(res);
-      connection.end();
-    }
-  );
-}
-//add role
-function addRoles(title, salary, department_id) {
-  connection.query(
-    `INSERT INTO role (title, salary, department_id)
-    VALUES (${title}, ${salary}, $${department_id})
-    `,
-    function (err, res) {
-      if (err) throw err;
-      console.table(res);
-      connection.end();
-    }
-  );
-}
+// //get departments
+// function getDepartments() {
+//   connection.query(
+//     `SELECT name FROM department;
+//     `,
+//     function (err, res) {
+//       if (err) throw err;
+//       console.table(res);
+//       connection.end();
+//     }
+//   );
+// }
+// //add department
+// function addDepartments(name) {
+//   connection.query(
+//     `INSERT INTO department (name)
+//     VALUES (${name})
+//     `,
+//     function (err, res) {
+//       if (err) throw err;
+//       console.table(res);
+//     }
+//   );
+// }
+// //get roles
+// function getRoles() {
+//   connection.query(
+//     `SELECT title FROM role;
+//     `,
+//     function (err, res) {
+//       if (err) throw err;
+//       console.table(res);
+//       connection.end();
+//     }
+//   );
+// }
+// //add role
+// function addRoles(title, salary, department_id) {
+//   connection.query(
+//     `INSERT INTO role (title, salary, department_id)
+//     VALUES (${title}, ${salary}, $${department_id})
+//     `,
+//     function (err, res) {
+//       if (err) throw err;
+//       console.table(res);
+//     }
+//   );
+// }
