@@ -17,8 +17,8 @@ var connection = mysql.createConnection({
   database: "employee_trackerDB",
 });
 let employeeNamesArray = [];
-let departmentsArray = [];
-let rolesData = [];
+let departmentsArray = ["Sales", "Finance", "Legal", "Engineering"];
+let rolesArray = ["Sales Rep", "Accountant", "Lawyer", "Software Engineer"];
 
 function init() {
   getEmployeeNames();
@@ -123,9 +123,9 @@ function addEmployeeQuestions() {
       },
       {
         type: "list",
-        message: "What is your preferred method of communciation?",
+        message: "What is the Employee's role?",
         name: "role",
-        choices: ["Sales Rep", "Accountant", "Lawyer", "Engineer"],
+        choices: rolesArray,
       },
     ])
     .then(function (choice) {
@@ -141,6 +141,8 @@ function addEmployeeQuestions() {
       } else if (choice.role === "Engineer") {
         role_id = 8;
         manager_id = 7;
+      } else {
+
       }
       addEmployee(choice.first, choice.last, role_id, manager_id);
       getEmployeeInfo();
@@ -199,6 +201,7 @@ function addDepartments() {
         `,
         function (err, res) {
           if (err) throw err;
+          departmentsArray.push(choice.name);
         }
       );
       getDepartments();
