@@ -23,7 +23,7 @@ connection.connect(function (err) {
   //getDepartments();
   //getRoles();
 });
-
+//get employee info
 function getEmployeeInfo() {
   connection.query(
     `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, employee.manager_id
@@ -38,7 +38,19 @@ function getEmployeeInfo() {
     }
   );
 }
-
+//function to add new employee
+function addEmployee(first, last, role_id, manager_id){
+  connection.query(
+    `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+    VALUES (${first}, ${last}, ${role_id}, ${manager_id})`,
+    function (err, res) {
+      if (err) throw err;
+      console.table(res);
+      connection.end();
+    }
+  );  
+}
+//get employee names
 function getEmployeeNames() {
   connection.query(
     `SELECT CONCAT(first_name, ' ', last_name) FROM employee;
@@ -50,7 +62,7 @@ function getEmployeeNames() {
     }
   );
 }
-
+//get departments
 function getDepartments() {
   connection.query(
     `SELECT name FROM department;
@@ -62,10 +74,36 @@ function getDepartments() {
     }
   );
 }
-
+//add department
+function addDepartments(name) {
+  connection.query(
+    `INSERT INTO department (name)
+    VALUES (${name})
+    `,
+    function (err, res) {
+      if (err) throw err;
+      console.table(res);
+      connection.end();
+    }
+  );
+}
+//get roles
 function getRoles() {
   connection.query(
     `SELECT title FROM role;
+    `,
+    function (err, res) {
+      if (err) throw err;
+      console.table(res);
+      connection.end();
+    }
+  );
+}
+//add role
+function addRoles(title, salary, department_id) {
+  connection.query(
+    `INSERT INTO role (title, salary, department_id)
+    VALUES (${title}, ${salary}, $${department_id})
     `,
     function (err, res) {
       if (err) throw err;
