@@ -1,6 +1,7 @@
 const mysql = require("mysql");
 const cTable = require("console.table");
 const inquirer = require("inquirer");
+const figlet = require("figlet");
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -31,8 +32,7 @@ function init() {
     .then((choice) => {
       if (choice.do === "Remove an Employee.") {
         removeEmployeeQuestions();
-      }
-      else if (choice.do === "Add an employee.") {
+      } else if (choice.do === "Add an employee.") {
         addEmployeeQuestions();
       }
     });
@@ -41,15 +41,27 @@ function init() {
 connection.connect(function (err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId);
-  // getEmployeeInfo();
-  //getEmployeeNames();
-  //getDepartments();
-  //getRoles();
-  //addEmployeeQuestions();
-  // getEmployeeNames();
-  // removeEmployeeQuestions();
-  init();
+  figlet.text(
+    "GRIFFIN",
+    {
+      font: "Ghost",
+      horizontalLayout: "default",
+      verticalLayout: "default",
+      width: 80,
+      whitespaceBreak: true,
+    },
+    function (err, data) {
+      if (err) {
+        console.log("Something went wrong...");
+        console.dir(err);
+        return;
+      }
+      console.log(data);
+      init();
+    }
+  )
 });
+
 //get employee info
 function getEmployeeInfo() {
   connection.query(
