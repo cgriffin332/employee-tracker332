@@ -32,6 +32,9 @@ function init() {
       if (choice.do === "Remove an Employee.") {
         removeEmployeeQuestions();
       }
+      else if (choice.do === "Add an employee.") {
+        addEmployeeQuestions();
+      }
     });
 }
 
@@ -62,10 +65,6 @@ function getEmployeeInfo() {
     }
   );
 }
-// type: "list",
-//       message: "What is your preferred method of communciation?",
-//       name: "method",
-//       choices: ["email", "phone"]
 
 function removeEmployeeQuestions() {
   inquirer
@@ -89,55 +88,55 @@ function removeEmployeeQuestions() {
     });
 }
 
-// function addEmployeeQuestions() {
-//   inquirer
-//     .prompt([
-//       {
-//         type: "input",
-//         message: "What is the employee's first name?",
-//         name: "first",
-//       },
-//       {
-//         type: "input",
-//         message: "What is the employee's last name?",
-//         name: "last",
-//       },
-//       {
-//         type: "list",
-//         message: "What is your preferred method of communciation?",
-//         name: "role",
-//         choices: ["Sales Rep", "Accountant", "Lawyer", "Engineer"],
-//       },
-//     ])
-//     .then(function (choice) {
-//       if (choice.role === "Sales Rep") {
-//         role_id = 2;
-//         manager_id = 1;
-//       } else if (choice.role === "Accountant") {
-//         role_id = 4;
-//         manager_id = 3;
-//       } else if (choice.role === "Lawyer") {
-//         role_id = 6;
-//         manager_id = 5;
-//       } else if (choice.role === "Engineer") {
-//         role_id = 8;
-//         manager_id = 7;
-//       }
-//       addEmployee(choice.first, choice.last, role_id, manager_id);
-//       getEmployeeInfo();
-//     });
-// }
-// //function to add new employee
-// function addEmployee(first, last, role_id, manager_id) {
-//   connection.query(
-//     `INSERT INTO employee (first_name, last_name, role_id, manager_id)
-//   VALUES ("${first}", "${last}", ${role_id}, ${manager_id})`,
-//     function (err, res) {
-//       if (err) throw err;
-//       console.table(res);
-//     }
-//   );
-// }
+function addEmployeeQuestions() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the employee's first name?",
+        name: "first",
+      },
+      {
+        type: "input",
+        message: "What is the employee's last name?",
+        name: "last",
+      },
+      {
+        type: "list",
+        message: "What is your preferred method of communciation?",
+        name: "role",
+        choices: ["Sales Rep", "Accountant", "Lawyer", "Engineer"],
+      },
+    ])
+    .then(function (choice) {
+      if (choice.role === "Sales Rep") {
+        role_id = 2;
+        manager_id = 1;
+      } else if (choice.role === "Accountant") {
+        role_id = 4;
+        manager_id = 3;
+      } else if (choice.role === "Lawyer") {
+        role_id = 6;
+        manager_id = 5;
+      } else if (choice.role === "Engineer") {
+        role_id = 8;
+        manager_id = 7;
+      }
+      addEmployee(choice.first, choice.last, role_id, manager_id);
+      getEmployeeInfo();
+    });
+}
+//function to add new employee
+function addEmployee(first, last, role_id, manager_id) {
+  connection.query(
+    `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+  VALUES ("${first}", "${last}", ${role_id}, ${manager_id})`,
+    function (err, res) {
+      if (err) throw err;
+      console.table(res);
+    }
+  );
+}
 //get employee names
 function getEmployeeNames() {
   connection.query(
