@@ -33,6 +33,7 @@ function init() {
           "Add an employee.",
           "Add a new department.",
           "Add a new role.",
+          "I am done."
         ],
       },
     ])
@@ -45,8 +46,11 @@ function init() {
         addDepartments();
       } else if (choice.do === "Add a new role.") {
         addRoles();
+      } else if (choice.do === "I am done."){
+        connection.end();
       }
     });
+    
 }
 
 connection.connect(function (err) {
@@ -84,11 +88,25 @@ function getEmployeeInfo() {
     function (err, res) {
       if (err) throw err;
       console.table(res);
-      connection.end();
+      // connection.end();
+      init();
     }
   );
 }
-
+//get employee names
+function getEmployeeNames() {
+  connection.query(
+    `SELECT CONCAT(first_name, ' ', last_name) FROM employee;
+    `,
+    function (err, res) {
+      if (err) throw err;
+      for (let i = 0; i < res.length; i++) {
+        employeeNamesArray.push(res[i]["CONCAT(first_name, ' ', last_name)"]);
+      }
+      return employeeNamesArray;
+    }
+  );
+}
 function removeEmployeeQuestions() {
   inquirer
     .prompt([
@@ -159,20 +177,7 @@ function addEmployee(first, last, role_id, manager_id) {
     }
   );
 }
-//get employee names
-function getEmployeeNames() {
-  connection.query(
-    `SELECT CONCAT(first_name, ' ', last_name) FROM employee;
-    `,
-    function (err, res) {
-      if (err) throw err;
-      for (let i = 0; i < res.length; i++) {
-        employeeNamesArray.push(res[i]["CONCAT(first_name, ' ', last_name)"]);
-      }
-      return employeeNamesArray;
-    }
-  );
-}
+
 //get departments
 function getDepartments() {
   connection.query(
@@ -181,7 +186,8 @@ function getDepartments() {
     function (err, res) {
       if (err) throw err;
       console.table(res);
-      connection.end();
+      init();
+      // connection.end();
     }
   );
 }
@@ -216,7 +222,8 @@ function getRoles() {
     function (err, res) {
       if (err) throw err;
       console.table(res);
-      connection.end();
+      init();
+      // connection.end();
     }
   );
 }
@@ -242,6 +249,8 @@ function addRoles() {
       },
     ])
     .then(function (choice) {
+      rolesArray.push(choice.name);
+      console.log(rolesArray);
       connection.query(
         `INSERT INTO role (title, salary, department_id)
     VALUES ("${choice.name}", ${choice.salary}, ${choice.department})
