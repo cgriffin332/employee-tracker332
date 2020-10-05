@@ -31,7 +31,8 @@ function init() {
         choices: [
           "Remove an Employee.",
           "Add an employee.",
-          "Add a new department",
+          "Add a new department.",
+          "Add a new role.",
         ],
       },
     ])
@@ -40,8 +41,10 @@ function init() {
         removeEmployeeQuestions();
       } else if (choice.do === "Add an employee.") {
         addEmployeeQuestions();
-      } else if (choice.do === "Add a new department") {
+      } else if (choice.do === "Add a new department.") {
         addDepartments();
+      } else if (choice.do === "Add a new role.") {
+        addRoles();
       }
     });
 }
@@ -141,8 +144,6 @@ function addEmployeeQuestions() {
       } else if (choice.role === "Engineer") {
         role_id = 8;
         manager_id = 7;
-      } else {
-
       }
       addEmployee(choice.first, choice.last, role_id, manager_id);
       getEmployeeInfo();
@@ -207,27 +208,48 @@ function addDepartments() {
       getDepartments();
     });
 }
-// //get roles
-// function getRoles() {
-//   connection.query(
-//     `SELECT title FROM role;
-//     `,
-//     function (err, res) {
-//       if (err) throw err;
-//       console.table(res);
-//       connection.end();
-//     }
-//   );
-// }
-// //add role
-// function addRoles(title, salary, department_id) {
-//   connection.query(
-//     `INSERT INTO role (title, salary, department_id)
-//     VALUES (${title}, ${salary}, $${department_id})
-//     `,
-//     function (err, res) {
-//       if (err) throw err;
-//       console.table(res);
-//     }
-//   );
-// }
+//get roles
+function getRoles() {
+  connection.query(
+    `SELECT title FROM role;
+    `,
+    function (err, res) {
+      if (err) throw err;
+      console.table(res);
+      connection.end();
+    }
+  );
+}
+//add role
+function addRoles() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is role name?",
+        name: "name",
+      },
+      {
+        type: "input",
+        message: "What is the role salary?",
+        name: "salary",
+      },
+      {
+        type: "list",
+        message: "What is the Departmant id?",
+        name: "department",
+        choices: [1, 2, 3, 4, 5, 6],
+      },
+    ])
+    .then(function (choice) {
+      connection.query(
+        `INSERT INTO role (title, salary, department_id)
+    VALUES ("${choice.name}", ${choice.salary}, ${choice.department})
+    `,
+        function (err, res) {
+          if (err) throw err;
+          getRoles();
+        }
+      );
+    });
+}
