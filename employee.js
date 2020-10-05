@@ -17,6 +17,8 @@ var connection = mysql.createConnection({
   database: "employee_trackerDB",
 });
 let employeeNamesArray = [];
+let departmentsArray = [];
+let rolesData = [];
 
 function init() {
   getEmployeeNames();
@@ -26,7 +28,11 @@ function init() {
         type: "list",
         message: "What would you like to do?",
         name: "do",
-        choices: ["Remove an Employee.", "Add an employee."],
+        choices: [
+          "Remove an Employee.",
+          "Add an employee.",
+          "Add a new department",
+        ],
       },
     ])
     .then((choice) => {
@@ -34,6 +40,8 @@ function init() {
         removeEmployeeQuestions();
       } else if (choice.do === "Add an employee.") {
         addEmployeeQuestions();
+      } else if (choice.do === "Add a new department") {
+        addDepartments();
       }
     });
 }
@@ -59,7 +67,7 @@ connection.connect(function (err) {
       console.log(data);
       init();
     }
-  )
+  );
 });
 
 //get employee info
@@ -145,7 +153,6 @@ function addEmployee(first, last, role_id, manager_id) {
   VALUES ("${first}", "${last}", ${role_id}, ${manager_id})`,
     function (err, res) {
       if (err) throw err;
-      console.table(res);
     }
   );
 }
@@ -163,30 +170,40 @@ function getEmployeeNames() {
     }
   );
 }
-// //get departments
-// function getDepartments() {
-//   connection.query(
-//     `SELECT name FROM department;
-//     `,
-//     function (err, res) {
-//       if (err) throw err;
-//       console.table(res);
-//       connection.end();
-//     }
-//   );
-// }
-// //add department
-// function addDepartments(name) {
-//   connection.query(
-//     `INSERT INTO department (name)
-//     VALUES (${name})
-//     `,
-//     function (err, res) {
-//       if (err) throw err;
-//       console.table(res);
-//     }
-//   );
-// }
+//get departments
+function getDepartments() {
+  connection.query(
+    `SELECT * FROM department;
+    `,
+    function (err, res) {
+      if (err) throw err;
+      console.table(res);
+      connection.end();
+    }
+  );
+}
+//add department
+function addDepartments() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What department would you like to add?",
+        name: "name",
+      },
+    ])
+    .then(function (choice) {
+      connection.query(
+        `INSERT INTO department (name)
+      VALUES ("${choice.name}")
+        `,
+        function (err, res) {
+          if (err) throw err;
+        }
+      );
+      getDepartments();
+    });
+}
 // //get roles
 // function getRoles() {
 //   connection.query(
