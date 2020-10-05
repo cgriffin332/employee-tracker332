@@ -17,16 +17,35 @@ var connection = mysql.createConnection({
 });
 let employeeNamesArray = [];
 
+function init() {
+  getEmployeeNames();
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        message: "What would you like to do?",
+        name: "do",
+        choices: ["Remove an Employee.", "Add an employee."],
+      },
+    ])
+    .then((choice) => {
+      if (choice.do === "Remove an Employee.") {
+        removeEmployeeQuestions();
+      }
+    });
+}
+
 connection.connect(function (err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId);
-  getEmployeeInfo();
+  // getEmployeeInfo();
   //getEmployeeNames();
   //getDepartments();
   //getRoles();
   //addEmployeeQuestions();
   // getEmployeeNames();
   // removeEmployeeQuestions();
+  init();
 });
 //get employee info
 function getEmployeeInfo() {
@@ -49,16 +68,8 @@ function getEmployeeInfo() {
 //       choices: ["email", "phone"]
 
 function removeEmployeeQuestions() {
-  // getEmployeeNames();
-  //need to get this to wait
   inquirer
     .prompt([
-      {
-        type: "list",
-        message: "What wouldyou like to do?",
-        name: "do",
-        choices: ["Remove an Employee.", "Don't remove an employee."],
-      },
       {
         type: "list",
         message: "Which employee would you like to remove?",
@@ -68,11 +79,10 @@ function removeEmployeeQuestions() {
     ])
     .then(function (choice) {
       connection.query(
-        `DELETE FROM employee
-      WHERE first_name = "${choice.name.split(" ")[0]}"`,
+        "DELETE FROM employee WHERE first_name = ?",
+        [choice.name.split(" ")[0]],
         function (err, res) {
           if (err) throw err;
-          console.table(res);
         }
       );
       getEmployeeInfo();
