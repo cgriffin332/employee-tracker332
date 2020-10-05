@@ -1,4 +1,5 @@
-var mysql = require("mysql");
+const mysql = require("mysql");
+const cTable = require('console.table');
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -17,10 +18,10 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId);
-  //getEmployeeInfo();
+  getEmployeeInfo();
   //getEmployeeNames();
   //getDepartments();
-  getRoles();
+  //getRoles();
 });
 
 function getEmployeeInfo() {
