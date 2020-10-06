@@ -31,8 +31,9 @@ function init() {
         message: "What would you like to do?",
         name: "do",
         choices: [
-          "Remove an Employee.",
           "Add an employee.",
+          "Remove an Employee.",
+          "Update employee role.",
           "View employees.",
           "Add a new department.",
           "View departments.",
@@ -59,6 +60,8 @@ function init() {
         getDepartments();
       } else if (choice.do === "View roles.") {
         getRoles();
+      } else if (choice.do === "Update employee role.") {
+        updateEmployeeRoles();
       }
     });
 }
@@ -299,6 +302,52 @@ function addRoles() {
         function (err, res) {
           if (err) throw err;
           getRoles();
+        }
+      );
+    });
+}
+//update employee roles
+function updateEmployeeRoles() {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        message: "Which employee would you like to update?",
+        name: "name",
+        choices: employeeNamesArray,
+      },
+      {
+        type: "list",
+        message: "What role would you like to assign?",
+        name: "role",
+        choices: rolesArray,
+      },
+    ])
+    .then(function (data) {
+      if (data.role === "Sales Rep") {
+        num = 2;
+      } else if (data.role === "Accountant"){
+        num = 4;
+      }else if (data.role === "Lawyer"){
+        num = 6;
+      }else if (data.role === "Software Engineer"){
+        num = 8;
+      } else{
+        num = 9;
+      }
+      connection.query(
+        "UPDATE employee SET ? WHERE ?",
+        [
+          {
+            role_id: num,
+          },
+          {
+            first_name: data.name.split(" ")[0],
+          },
+        ],
+        function (err, res) {
+          if (err) throw err;
+          init();
         }
       );
     });
