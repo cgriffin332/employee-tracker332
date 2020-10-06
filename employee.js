@@ -20,6 +20,31 @@ let employeeNamesArray = [];
 let departmentsArray = ["Sales", "Finance", "Legal", "Engineering"];
 let rolesArray = ["Sales Rep", "Accountant", "Lawyer", "Software Engineer"];
 
+connection.connect(function (err) {
+  if (err) throw err;
+  console.log("connected as id " + connection.threadId);
+  figlet.text(
+    "GRIFFIN",
+    {
+      font: "Ghost",
+      horizontalLayout: "default",
+      verticalLayout: "default",
+      width: 80,
+      whitespaceBreak: true,
+    },
+    function (err, data) {
+      if (err) {
+        console.log("Something went wrong...");
+        console.dir(err);
+        return;
+      }
+      console.log(data);
+      init();
+    }
+  );
+});
+
+//function to ask all questions
 function init() {
   getEmployeeNames();
   updateDepartments();
@@ -66,29 +91,6 @@ function init() {
     });
 }
 
-connection.connect(function (err) {
-  if (err) throw err;
-  console.log("connected as id " + connection.threadId);
-  figlet.text(
-    "GRIFFIN",
-    {
-      font: "Ghost",
-      horizontalLayout: "default",
-      verticalLayout: "default",
-      width: 80,
-      whitespaceBreak: true,
-    },
-    function (err, data) {
-      if (err) {
-        console.log("Something went wrong...");
-        console.dir(err);
-        return;
-      }
-      console.log(data);
-      init();
-    }
-  );
-});
 
 //get employee info
 function getEmployeeInfo() {
@@ -245,20 +247,7 @@ function addDepartments() {
       getDepartments();
     });
 }
-//updateRoles
-// function updateRoles() {
-//   connection.query(
-//     `SELECT title FROM role;
-//     `,
-//     function (err, res) {
-//       if (err) throw err;
-//       for (let i = 0; i < res.length; i++) {
-//         rolesArray.push(res[i]["title"]);
-//       }
-//       return rolesArray;
-//     }
-//   );
-// }
+
 //get roles
 function getRoles() {
   connection.query(
