@@ -183,6 +183,7 @@ function addEmployeeQuestions() {
         manager_id = 1;
       }
       addEmployee(choice.first, choice.last, role_id, manager_id);
+      getEmployeeNames();
       getEmployeeInfo();
     });
 }
