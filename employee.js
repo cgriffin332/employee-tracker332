@@ -22,6 +22,8 @@ let rolesArray = ["Sales Rep", "Accountant", "Lawyer", "Software Engineer"];
 
 function init() {
   getEmployeeNames();
+  updateDepartments();
+
   inquirer
     .prompt([
       {
@@ -36,7 +38,7 @@ function init() {
           "View departments.",
           "Add a new role.",
           "View roles.",
-          "I am done."
+          "I am done.",
         ],
       },
     ])
@@ -49,7 +51,7 @@ function init() {
         addDepartments();
       } else if (choice.do === "Add a new role.") {
         addRoles();
-      } else if (choice.do === "I am done."){
+      } else if (choice.do === "I am done.") {
         connection.end();
       } else if (choice.do === "View employees.") {
         getEmployeeInfo();
@@ -57,9 +59,8 @@ function init() {
         getDepartments();
       } else if (choice.do === "View roles.") {
         getRoles();
-      } 
+      }
     });
-    
 }
 
 connection.connect(function (err) {
@@ -116,6 +117,7 @@ function getEmployeeNames() {
     }
   );
 }
+//get employees
 function removeEmployeeQuestions() {
   inquirer
     .prompt([
@@ -137,7 +139,7 @@ function removeEmployeeQuestions() {
       getEmployeeInfo();
     });
 }
-
+//add employees
 function addEmployeeQuestions() {
   inquirer
     .prompt([
@@ -168,9 +170,12 @@ function addEmployeeQuestions() {
       } else if (choice.role === "Lawyer") {
         role_id = 6;
         manager_id = 5;
-      } else if (choice.role === "Engineer") {
+      } else if (choice.role === "Software Engineer") {
         role_id = 8;
         manager_id = 7;
+      } else {
+        role_id = 9;
+        manager_id = 1;
       }
       addEmployee(choice.first, choice.last, role_id, manager_id);
       getEmployeeInfo();
@@ -186,8 +191,7 @@ function addEmployee(first, last, role_id, manager_id) {
     }
   );
 }
-
-//get departments
+// get departments
 function getDepartments() {
   connection.query(
     `SELECT * FROM department;
@@ -197,6 +201,21 @@ function getDepartments() {
       console.table(res);
       init();
       // connection.end();
+    }
+  );
+}
+
+//update department array
+function updateDepartments() {
+  connection.query(
+    `SELECT * FROM department;
+    `,
+    function (err, res) {
+      if (err) throw err;
+      for (let i = 0; i < res.length; i++) {
+        departmentsArray.push(res[i]["department"]);
+      }
+      return departmentsArray;
     }
   );
 }
@@ -223,10 +242,24 @@ function addDepartments() {
       getDepartments();
     });
 }
+//updateRoles
+// function updateRoles() {
+//   connection.query(
+//     `SELECT title FROM role;
+//     `,
+//     function (err, res) {
+//       if (err) throw err;
+//       for (let i = 0; i < res.length; i++) {
+//         rolesArray.push(res[i]["title"]);
+//       }
+//       return rolesArray;
+//     }
+//   );
+// }
 //get roles
 function getRoles() {
   connection.query(
-    `SELECT title FROM role;
+    `SELECT * FROM role;
     `,
     function (err, res) {
       if (err) throw err;
@@ -254,12 +287,11 @@ function addRoles() {
         type: "list",
         message: "What is the Departmant id?",
         name: "department",
-        choices: [1, 2, 3, 4, 5, 6],
+        choices: [1, 2, 3, 4, 5],
       },
     ])
     .then(function (choice) {
       rolesArray.push(choice.name);
-      console.log(rolesArray);
       connection.query(
         `INSERT INTO role (title, salary, department_id)
     VALUES ("${choice.name}", ${choice.salary}, ${choice.department})
