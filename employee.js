@@ -22,6 +22,7 @@ let rolesArray = ["Sales Rep", "Accountant", "Lawyer", "Software Engineer"];
 
 connection.connect(function (err) {
   if (err) throw err;
+  // resetTableValues();
   console.log("connected as id " + connection.threadId);
   figlet.text(
     "GRIFFIN",
@@ -48,7 +49,6 @@ connection.connect(function (err) {
 function init() {
   getEmployeeNames();
   // updateDepartments();
-
   inquirer
     .prompt([
       {
@@ -60,8 +60,8 @@ function init() {
           "View departments.",
           "View roles.",
           "Add a new department.",
-          "Add an employee.",
           "Add a new role.",
+          "Add an employee.",
           "Update employee role.",
           "Remove an Employee.",
           "I am done.",
@@ -90,11 +90,19 @@ function init() {
       }
     });
 }
-
+// function resetTableValues(){
+//   connection.query(
+//     `DROP DATABASE IF EXISTS employee_trackerDB;CREATE DATABASE employee_trackerDB;USE employee_trackerDB;CREATE TABLE employee (id INT NOT NULL AUTO_INCREMENT,first_name VARCHAR(30) NOT NULL,last_name VARCHAR(30) NOT NULL,role_id INT,manager_id INT,PRIMARY KEY (id));INSERT INTO employee (first_name, last_name, role_id, manager_id)VALUES ("James", "Smith", 1, null), ("Fred", "Williams", 2, 1), ("Jessica", "Waterhouse", 3, null), ("Mark", "Hall", 4, 3), ("Calvin", "Griffin", 5, null), ("Susan", "Fisk", 6, 5), ("Holly", "Razor", 7, null), ("Lindsey", "Ashton", 8, 7);CREATE TABLE role (id INT NOT NULL AUTO_INCREMENT,title VARCHAR(30),salary decimal,department_id INT,PRIMARY KEY (id));INSERT INTO role (title, salary, department_id)VALUES ("Sales Lead", 100000, 1), ("Sales Rep", 70000, 1), ("Head of Finance", 150000, 2), ("Accountant", 120000, 2), ("Head of Legal", 250000, 3), ("Lawyer", 200000, 3), ("Lead Engineer", 150000, 4), ("Software Engineer", 120000, 4);CREATE TABLE department (id INT NOT NULL AUTO_INCREMENT,name VARCHAR(30),PRIMARY KEY (id));INSERT INTO department (name)VALUES ("Sales"), ("Finance"), ("Legal"), ("Engineering");
+//     `,
+//     function (err, res) {
+//       if (err) throw err;
+//     }
+//   );
+// }
 //get employee info
 function getEmployeeInfo() {
   connection.query(
-    `SELECT employee.id, employee.first_name AS First, employee.last_name AS Last, role.title AS Role, department.name AS Department, role.salary AS Salary, CONCAT (managers.first_name , " " , managers.last_name) AS Manager
+    `SELECT employee.id, employee.first_name AS first, employee.last_name AS last, role.title AS role, department.name as department, role.salary, CONCAT (managers.first_name , " " , managers.last_name) AS Manager
   FROM role
   INNER JOIN employee ON employee.role_id = role.id 
   INNER JOIN department ON department.id = role.department_id
@@ -238,7 +246,7 @@ function addDepartments() {
     ])
     .then(function (choice) {
       connection.query(
-        `INSERT INTO department (name AS Department)
+        `INSERT INTO department (name)
       VALUES ("${choice.name}")
         `,
         function (err, res) {
@@ -301,7 +309,7 @@ function addRoles() {
       console.log(`department: ${choice.department} num: ${num}`)
       rolesArray.push(choice.name);
       connection.query(
-        `INSERT INTO role (title AS Role, salary AS Salary, department_id AS DepartmentID)
+        `INSERT INTO role (title, salary, department_id)
     VALUES ("${choice.name}", ${choice.salary}, ${num})
     `,
         function (err, res) {
