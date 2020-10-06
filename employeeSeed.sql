@@ -8,7 +8,7 @@ CREATE TABLE employee (
   id INT NOT NULL AUTO_INCREMENT,
   first_name VARCHAR(30) NOT NULL,
   last_name VARCHAR(30) NOT NULL,
-  role_id INT NOT NULL,
+  role_id INT,
   manager_id INT,
   PRIMARY KEY (id)
 );
@@ -18,9 +18,9 @@ VALUES ("James", "Smith", 1, null), ("Fred", "Williams", 2, 1), ("Jessica", "Wat
 
 CREATE TABLE role (
   id INT NOT NULL AUTO_INCREMENT,
-  title VARCHAR(30) NOT NULL,
+  title VARCHAR(30),
   salary decimal,
-  department_id INT NOT NULL,
+  department_id INT,
   PRIMARY KEY (id)
 );
 
@@ -29,7 +29,7 @@ VALUES ("Sales Lead", 100000, 1), ("Sales Rep", 70000, 1), ("Head of Finance", 1
 
 CREATE TABLE department (
   id INT NOT NULL AUTO_INCREMENT,
-  name VARCHAR(30) NOT NULL,
+  name VARCHAR(30),
   PRIMARY KEY (id)
 );
 
