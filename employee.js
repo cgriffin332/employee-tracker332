@@ -31,8 +31,11 @@ function init() {
         choices: [
           "Remove an Employee.",
           "Add an employee.",
+          "View employees.",
           "Add a new department.",
+          "View departments.",
           "Add a new role.",
+          "View roles.",
           "I am done."
         ],
       },
@@ -48,7 +51,13 @@ function init() {
         addRoles();
       } else if (choice.do === "I am done."){
         connection.end();
-      }
+      } else if (choice.do === "View employees.") {
+        getEmployeeInfo();
+      } else if (choice.do === "View departments.") {
+        getDepartments();
+      } else if (choice.do === "View roles.") {
+        getRoles();
+      } 
     });
     
 }
