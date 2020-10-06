@@ -91,14 +91,14 @@ function init() {
     });
 }
 
-
 //get employee info
 function getEmployeeInfo() {
   connection.query(
-    `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, employee.manager_id
+    `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, CONCAT (managers.first_name , " " , managers.last_name) AS Manager
   FROM role
   INNER JOIN employee ON employee.role_id = role.id 
   INNER JOIN department ON department.id = role.department_id
+  LEFT JOIN employee AS managers ON employee.manager_id=managers.id
   ORDER BY employee.id;`,
     function (err, res) {
       if (err) throw err;
@@ -315,13 +315,13 @@ function updateEmployeeRoles() {
     .then(function (data) {
       if (data.role === "Sales Rep") {
         num = 2;
-      } else if (data.role === "Accountant"){
+      } else if (data.role === "Accountant") {
         num = 4;
-      }else if (data.role === "Lawyer"){
+      } else if (data.role === "Lawyer") {
         num = 6;
-      }else if (data.role === "Software Engineer"){
+      } else if (data.role === "Software Engineer") {
         num = 8;
-      } else{
+      } else {
         num = 9;
       }
       connection.query(
