@@ -20,7 +20,38 @@ First, copy the files from this GitHub repo, including employee.js, employeeSeed
 
 ## Usage
 
-Once the start command is run, the user will be shown a list asking what they want to do. They can “View employees.”, which shows a list of all employees and information, “View departments.” which shows all departments, “View roles.” which shows all roles, “Add a new department.” which leads to questions which allows the user to add a department,  “Add a new role.” which leads to questions which allows the user to add a role, “Add a new employee.” which leads to questions which allows the user to add an employee, “Update employee role.” which allows the user to update an employee’s role, “Remove an employee”, or “View the budget” by department or total.  Once the user is finished, choose “I am done.”.
+Once the start command is run, the user will be shown a list asking what they want to do. 
+![Image of Start](./images/emp1.png)
+
+They can “View employees.”, which shows a list of all employees and information, 
+![Image of View employees](./images/emp2.png)
+
+“View departments.” which shows all departments, 
+![Image of View departments](./images/emp3.png)
+
+“View roles.” which shows all roles, 
+![Image of View roles](./images/emp4.png)
+
+“Add a new department.” which leads to questions which allows the user to add a department,  
+![Image of Add a new department](./images/emp5.png)
+
+“Add a new role.” which leads to questions which allows the user to add a role, 
+![Image of Add a new role](./images/emp6.png)
+
+“Add a new employee.” which leads to questions which allows the user to add an employee, 
+![Image of Add a new employee](./images/emp7.png)
+
+“Update employee role.” which allows the user to update an employee’s role, 
+![Image of Update employee role](./images/emp8.png)
+
+“Remove an employee.”, or 
+![Image of Remove an employee](./images/emp9.png)
+
+“View the budget.” by department or total.  
+![Image of View the budget](./images/emp10.png)
+
+Once the user is finished, choose “I am done.”.
+![Image of End](./images/emp11.png)
 
 ## License
 
