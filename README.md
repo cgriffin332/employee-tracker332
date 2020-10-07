@@ -26,6 +26,12 @@ Once the start command is run, the user will be shown a list asking what they wa
 They can “View employees.”, which shows a list of all employees and information, 
 ![Image of View employees](./images/emp2.png)
 
+“View employees by department.”,  
+![Image of View employees by department.](./images/emp12.png)
+
+“View employees by role.”,  
+![Image of View employees by role.](./images/emp13.png)
+
 “View departments.” which shows all departments, 
 ![Image of View departments](./images/emp3.png)
 
