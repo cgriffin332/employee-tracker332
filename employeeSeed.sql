@@ -1,3 +1,5 @@
+-- Starter information
+
 DROP DATABASE IF EXISTS employee_trackerDB;
 
 CREATE DATABASE employee_trackerDB;
@@ -35,13 +37,3 @@ CREATE TABLE department (
 
 INSERT INTO department (name)
 VALUES ("Sales"), ("Finance"), ("Legal"), ("Engineering");
-
--- SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, CONCAT (managers.first_name , " " , managers.last_name) AS Manager
--- FROM role
--- INNER JOIN employee ON employee.role_id = role.id 
--- INNER JOIN department ON department.id = role.department_id
--- LEFT JOIN employee AS managers ON employee.manager_id=managers.id
--- ORDER BY employee.id;
-
--- SELECT CONCAT(first_name, ' ', last_name) FROM employee;
--- SELECT CONCAT(first_name, ' ', last_name) FROM employee WHERE id = 1;

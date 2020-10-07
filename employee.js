@@ -20,10 +20,11 @@ let employeeNamesArray = [];
 let departmentsArray = ["Sales", "Finance", "Legal", "Engineering"];
 let rolesArray = ["Sales Rep", "Accountant", "Lawyer", "Software Engineer"];
 
+// run the program
 connection.connect(function (err) {
   if (err) throw err;
-  // resetTableValues();
   console.log("connected as id " + connection.threadId);
+  // opening design
   figlet.text(
     "GRIFFIN",
     {
@@ -40,6 +41,7 @@ connection.connect(function (err) {
         return;
       }
       console.log(data);
+      //begin questions
       init();
     }
   );
@@ -64,6 +66,7 @@ function init() {
           "Add an employee.",
           "Update employee role.",
           "Remove an Employee.",
+          "View the budget.",
           "I am done.",
         ],
       },
@@ -87,18 +90,16 @@ function init() {
         getRoles();
       } else if (choice.do === "Update employee role.") {
         updateEmployeeRoles();
+      } else if (choice.do === "View the budget.") {
+        getBudget();
       }
     });
 }
-// function resetTableValues(){
-//   connection.query(
-//     `DROP DATABASE IF EXISTS employee_trackerDB;CREATE DATABASE employee_trackerDB;USE employee_trackerDB;CREATE TABLE employee (id INT NOT NULL AUTO_INCREMENT,first_name VARCHAR(30) NOT NULL,last_name VARCHAR(30) NOT NULL,role_id INT,manager_id INT,PRIMARY KEY (id));INSERT INTO employee (first_name, last_name, role_id, manager_id)VALUES ("James", "Smith", 1, null), ("Fred", "Williams", 2, 1), ("Jessica", "Waterhouse", 3, null), ("Mark", "Hall", 4, 3), ("Calvin", "Griffin", 5, null), ("Susan", "Fisk", 6, 5), ("Holly", "Razor", 7, null), ("Lindsey", "Ashton", 8, 7);CREATE TABLE role (id INT NOT NULL AUTO_INCREMENT,title VARCHAR(30),salary decimal,department_id INT,PRIMARY KEY (id));INSERT INTO role (title, salary, department_id)VALUES ("Sales Lead", 100000, 1), ("Sales Rep", 70000, 1), ("Head of Finance", 150000, 2), ("Accountant", 120000, 2), ("Head of Legal", 250000, 3), ("Lawyer", 200000, 3), ("Lead Engineer", 150000, 4), ("Software Engineer", 120000, 4);CREATE TABLE department (id INT NOT NULL AUTO_INCREMENT,name VARCHAR(30),PRIMARY KEY (id));INSERT INTO department (name)VALUES ("Sales"), ("Finance"), ("Legal"), ("Engineering");
-//     `,
-//     function (err, res) {
-//       if (err) throw err;
-//     }
-//   );
-// }
+
+
+// EMPLOYEE FUNCTIONS
+
+
 //get employee info
 function getEmployeeInfo() {
   connection.query(
@@ -207,119 +208,6 @@ function addEmployee(first, last, role_id, manager_id) {
     }
   );
 }
-// get departments
-function getDepartments() {
-  connection.query(
-    `SELECT * FROM department;
-    `,
-    function (err, res) {
-      if (err) throw err;
-      console.table(res);
-      init();
-      // connection.end();
-    }
-  );
-}
-
-//update department array
-// function updateDepartments() {
-//   connection.query(
-//     `SELECT * FROM department;
-//     `,
-//     function (err, res) {
-//       if (err) throw err;
-//       for (let i = 0; i < res.length; i++) {
-//         departmentsArray.push(res[i]["department"]);
-//       }
-//     }
-//   );
-// }
-//add department
-function addDepartments() {
-  inquirer
-    .prompt([
-      {
-        type: "input",
-        message: "What department would you like to add?",
-        name: "name",
-      },
-    ])
-    .then(function (choice) {
-      connection.query(
-        `INSERT INTO department (name)
-      VALUES ("${choice.name}")
-        `,
-        function (err, res) {
-          if (err) throw err;
-          departmentsArray.push(choice.name);
-        }
-      );
-      console.log("Department Added!");
-      getDepartments();
-    });
-}
-
-//get roles
-function getRoles() {
-  connection.query(
-    `SELECT * FROM role;
-    `,
-    function (err, res) {
-      if (err) throw err;
-      console.table(res);
-      init();
-      // connection.end();
-    }
-  );
-}
-//add role
-function addRoles() {
-  console.log(departmentsArray);
-  inquirer
-    .prompt([
-      {
-        type: "input",
-        message: "What is role name?",
-        name: "name",
-      },
-      {
-        type: "input",
-        message: "What is the role salary?",
-        name: "salary",
-      },
-      {
-        type: "list",
-        message: "What is the Departmant id?",
-        name: "department",
-        choices: departmentsArray,
-      },
-    ])
-    .then(function (choice) {
-      if (choice.department === "Sales"){
-        num = 1;
-      } else if (choice.department === "Finance"){
-        num = 2;
-      } else if (choice.department === "Legal"){
-        num = 3;
-      } else if (choice.department === "Engineering"){
-        num = 4;
-      } else {
-        num = 5;
-      }
-      console.log(`department: ${choice.department} num: ${num}`)
-      rolesArray.push(choice.name);
-      connection.query(
-        `INSERT INTO role (title, salary, department_id)
-    VALUES ("${choice.name}", ${choice.salary}, ${num})
-    `,
-        function (err, res) {
-          if (err) throw err;
-          console.log("Role added!");
-          getRoles();
-        }
-      );
-    });
-}
 //update employee roles
 function updateEmployeeRoles() {
   inquirer
@@ -363,6 +251,149 @@ function updateEmployeeRoles() {
           if (err) throw err;
           console.log("Employee updated!");
           init();
+        }
+      );
+    });
+}
+
+// DEPARTMENT FUNCTIONS
+
+// get departments
+function getDepartments() {
+  connection.query(
+    `SELECT * FROM department;
+    `,
+    function (err, res) {
+      if (err) throw err;
+      console.table(res);
+      init();
+      // connection.end();
+    }
+  );
+}
+//add department
+function addDepartments() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What department would you like to add?",
+        name: "name",
+      },
+    ])
+    .then(function (choice) {
+      connection.query(
+        `INSERT INTO department (name)
+      VALUES ("${choice.name}")
+        `,
+        function (err, res) {
+          if (err) throw err;
+          departmentsArray.push(choice.name);
+        }
+      );
+      console.log("Department Added!");
+      getDepartments();
+    });
+}
+
+// ROLE FUNCTIONS
+
+//get roles
+function getRoles() {
+  connection.query(
+    `SELECT * FROM role;
+    `,
+    function (err, res) {
+      if (err) throw err;
+      console.table(res);
+      init();
+      // connection.end();
+    }
+  );
+}
+//add role
+function addRoles() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is role name?",
+        name: "name",
+      },
+      {
+        type: "input",
+        message: "What is the role salary?",
+        name: "salary",
+      },
+      {
+        type: "list",
+        message: "What is the Departmant id?",
+        name: "department",
+        choices: departmentsArray,
+      },
+    ])
+    .then(function (choice) {
+      if (choice.department === "Sales") {
+        num = 1;
+      } else if (choice.department === "Finance") {
+        num = 2;
+      } else if (choice.department === "Legal") {
+        num = 3;
+      } else if (choice.department === "Engineering") {
+        num = 4;
+      } else {
+        num = 5;
+      }
+      console.log(`department: ${choice.department} num: ${num}`);
+      rolesArray.push(choice.name);
+      connection.query(
+        `INSERT INTO role (title, salary, department_id)
+    VALUES ("${choice.name}", ${choice.salary}, ${num})
+    `,
+        function (err, res) {
+          if (err) throw err;
+          console.log("Role added!");
+          getRoles();
+        }
+      );
+    });
+}
+
+// BUDGET FUNCTION
+
+//get budget function
+function getBudget() {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        message: "Which budget would you like to see?",
+        name: "department",
+        choices: ["Sales", "Finance", "Legal", "Engineering", "Total", "Go Back"],
+      },
+    ])
+    .then(function (choice) {
+      if (choice.department === "Sales") {
+        end = "WHERE department.id = 1";
+      } else if (choice.department === "Finance") {
+        end = "WHERE department.id = 2";
+      } else if (choice.department === "Legal") {
+        end = "WHERE department.id = 3";
+      } else if (choice.department === "Engineering") {
+        end = "WHERE department.id = 4";
+      } else if (choice.department === "Total"){
+        end = "";
+      } else {
+        init();
+        return
+      }
+      connection.query(
+        `SELECT SUM(role.salary) AS budget FROM role INNER JOIN employee ON employee.role_id = role.id INNER JOIN department ON department.id = role.department_id ${end}
+        `,
+        function (err, res) {
+          if (err) throw err;
+          console.table(res);
+          getBudget();
         }
       );
     });
