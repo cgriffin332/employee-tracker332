@@ -12,8 +12,8 @@ var connection = mysql.createConnection({
   // Your username
   user: "root",
 
-  // Your password
-  password: "Sdat687!",
+  // Add your password
+  password: "",
   database: "employee_trackerDB",
 });
 let employeeNamesArray = [];
@@ -96,9 +96,7 @@ function init() {
     });
 }
 
-
 // EMPLOYEE FUNCTIONS
-
 
 //get employee info
 function getEmployeeInfo() {
@@ -369,7 +367,14 @@ function getBudget() {
         type: "list",
         message: "Which budget would you like to see?",
         name: "department",
-        choices: ["Sales", "Finance", "Legal", "Engineering", "Total", "Go Back"],
+        choices: [
+          "Sales",
+          "Finance",
+          "Legal",
+          "Engineering",
+          "Total",
+          "Go Back",
+        ],
       },
     ])
     .then(function (choice) {
@@ -381,11 +386,11 @@ function getBudget() {
         end = "WHERE department.id = 3";
       } else if (choice.department === "Engineering") {
         end = "WHERE department.id = 4";
-      } else if (choice.department === "Total"){
+      } else if (choice.department === "Total") {
         end = "";
       } else {
         init();
-        return
+        return;
       }
       connection.query(
         `SELECT SUM(role.salary) AS budget FROM role INNER JOIN employee ON employee.role_id = role.id INNER JOIN department ON department.id = role.department_id ${end}
