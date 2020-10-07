@@ -60,7 +60,9 @@ function init() {
         choices: [
           "View employees.",
           "View departments.",
+          "Search employees by department.",
           "View roles.",
+          "Search employees by role.",
           "Add a new department.",
           "Add a new role.",
           "Add an employee.",
@@ -78,6 +80,10 @@ function init() {
         addEmployeeQuestions();
       } else if (choice.do === "Add a new department.") {
         addDepartments();
+      } else if (choice.do === "Search employees by department.") {
+        searchByDepartment();
+      } else if (choice.do === "Search employees by role.") {
+        searchByRole();
       } else if (choice.do === "Add a new role.") {
         addRoles();
       } else if (choice.do === "I am done.") {
@@ -269,6 +275,45 @@ function getDepartments() {
     }
   );
 }
+//search employees by department
+function searchByDepartment() {
+  connection.query(`SELECT * FROM department`, function (err, res) {
+    if (err) throw err;
+    const mappedData = res.map((obj) => {
+      let newObj = {};
+      newObj.name = obj.name;
+      newObj.value = obj.id;
+      return newObj;
+    });
+    inquirer
+      .prompt([
+        {
+          name: "department",
+          message: "Which department would you like to search?",
+          type: "list",
+          choices: mappedData,
+        },
+      ])
+      .then((choice) => {
+        connection.query(
+          `SELECT employee.id, employee.first_name AS first, employee.last_name AS last, role.title AS role, department.name as department, role.salary, CONCAT (managers.first_name , " " , managers.last_name) AS Manager
+          FROM role
+          INNER JOIN employee ON employee.role_id = role.id 
+          INNER JOIN department ON department.id = role.department_id
+          LEFT JOIN employee AS managers ON employee.manager_id=managers.id
+          WHERE department.id = ?
+          ORDER BY employee.id;`,
+          [choice.department],
+          function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            // connection.end();
+            init();
+          }
+        );
+      });
+  });
+}
 //add department
 function addDepartments() {
   inquirer
@@ -308,6 +353,45 @@ function getRoles() {
       // connection.end();
     }
   );
+}
+//search employees by role
+function searchByRole() {
+  connection.query(`SELECT * FROM role`, function (err, res) {
+    if (err) throw err;
+    const mappedData = res.map((obj) => {
+      let newObj = {};
+      newObj.name = obj.title;
+      newObj.value = obj.id;
+      return newObj;
+    });
+    inquirer
+      .prompt([
+        {
+          name: "role",
+          message: "Which role would you like to search?",
+          type: "list",
+          choices: mappedData,
+        },
+      ])
+      .then((choice) => {
+        connection.query(
+          `SELECT employee.id, employee.first_name AS first, employee.last_name AS last, role.title AS role, department.name as department, role.salary, CONCAT (managers.first_name , " " , managers.last_name) AS Manager
+          FROM role
+          INNER JOIN employee ON employee.role_id = role.id 
+          INNER JOIN department ON department.id = role.department_id
+          LEFT JOIN employee AS managers ON employee.manager_id=managers.id
+          WHERE role.id = ?
+          ORDER BY employee.id;`,
+          [choice.role],
+          function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            // connection.end();
+            init();
+          }
+        );
+      });
+  });
 }
 //add role
 function addRoles() {
